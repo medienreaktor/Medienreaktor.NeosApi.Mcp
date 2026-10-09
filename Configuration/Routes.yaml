@@ -1,0 +1,19 @@
+-
+  name: 'MCP: Streamable HTTP endpoint'
+  uriPattern: 'mcp'
+  defaults:
+    '@package': 'Medienreaktor.NeosApi.Mcp'
+    '@controller': 'Mcp'
+    '@action': 'handle'
+    '@format': 'json'
+  httpMethods: ['POST', 'GET', 'DELETE', 'OPTIONS']
+
+-
+  name: 'MCP: Protected resource metadata (RFC 9728)'
+  uriPattern: '.well-known/oauth-protected-resource/mcp'
+  defaults:
+    '@package': 'Medienreaktor.NeosApi.Mcp'
+    '@controller': 'Discovery'
+    '@action': 'protectedResource'
+    '@format': 'json'
+  httpMethods: ['GET']

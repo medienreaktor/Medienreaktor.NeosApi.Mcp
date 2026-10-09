@@ -1,0 +1,108 @@
+Medienreaktor:
+  NeosApi:
+    Mcp:
+      # The MCP endpoint (/mcp) and its discovery document answer 404 until a
+      # distribution switches them on deliberately.
+      enabled: false
+
+      # Sent to the client on initialize: how a model should work with the
+      # tools. Distributions may append site-specific hints.
+      instructions: |
+        Edit Neos content through the Neos API. Every tool is one API operation, performed as the signed-in Neos user with that user's permissions.
+
+        How to work:
+        1. Call get_me for the signed-in user, then list_workspaces: the personal workspace is the one classified PERSONAL whose owner is that user's id.
+        2. Call list_sites with workspace set to that personal workspace. Node addresses encode the workspace: read through addresses of the personal workspace to see your own changes.
+        3. Explore with get_node_relation (children; descendants with search). Before writing a node, read its type with get_node_type: labels, help messages and placeholders say what belongs in each property.
+        4. Write with execute_commands into the personal workspace, never into live. Generate node aggregate ids yourself (lowercase UUIDs) and keep them to address the nodes afterwards.
+        5. Check the result with render_node or list_workspace_changes.
+        6. Publish or discard only when the user explicitly asks for it.
+
+      # Tool name => the OpenAPI operation it performs. Description and input
+      # schema come from the operation. readOnly/destructive become the MCP
+      # tool annotations. Set an entry to null to remove the tool.
+      tools:
+        get_me:
+          operation: getMe
+          readOnly: true
+        list_sites:
+          operation: listSites
+          readOnly: true
+        list_dimensions:
+          operation: listDimensions
+          readOnly: true
+        list_workspaces:
+          operation: listWorkspaces
+          readOnly: true
+        get_workspace:
+          operation: getWorkspace
+          readOnly: true
+        list_workspace_changes:
+          operation: listWorkspaceChanges
+          readOnly: true
+        list_node_types:
+          operation: listNodeTypes
+          readOnly: true
+        get_node_type:
+          operation: getNodeType
+          readOnly: true
+        get_node:
+          operation: getNode
+          readOnly: true
+        get_node_relation:
+          operation: getNodeRelation
+          readOnly: true
+        render_node:
+          operation: renderNode
+          readOnly: true
+        list_assets:
+          operation: listAssets
+          readOnly: true
+        get_asset:
+          operation: getAsset
+          readOnly: true
+        execute_commands:
+          operation: executeCommandBatch
+          destructive: true
+        publish_workspace:
+          operation: publishWorkspace
+          destructive: true
+        discard_workspace:
+          operation: discardWorkspace
+          destructive: true
+
+Neos:
+  Flow:
+    log:
+      psr3:
+        'Neos\Flow\Log\PsrLoggerFactory':
+          # The MCP SDK's own log: it writes several entries per request with
+          # full message dumps at INFO, so it gets a file of its own and only
+          # warnings and errors by default. Lower the threshold to debug the
+          # protocol.
+          mcpSdkLogger:
+            default:
+              class: Neos\Flow\Log\Backend\FileBackend
+              options:
+                logFileURL: '%FLOW_PATH_DATA%Logs/McpSdk.log'
+                createParentDirectories: true
+                severityThreshold: '%LOG_WARNING%'
+                maximumLogFileSize: 10485760
+                logFilesToKeep: 1
+
+    mvc:
+      routes:
+        'Medienreaktor.NeosApi.Mcp':
+          position: 'before Neos.Neos'
+
+    security:
+      authentication:
+        providers:
+          # The MCP endpoint authenticates with the Neos API's bearer tokens
+          # (patterns of the same type are OR-combined with the API's own).
+          'Medienreaktor.NeosApi:Bearer':
+            requestPatterns:
+              'Medienreaktor.NeosApi.Mcp:McpController':
+                pattern: 'ControllerObjectName'
+                patternOptions:
+                  controllerObjectNamePattern: 'Medienreaktor\NeosApi\Mcp\Controller\McpController'

@@ -1,0 +1,19 @@
+#
+# Sessions of MCP clients that use the handshake-era protocol (initialize +
+# Mcp-Session-Id). They hold protocol state only - no credentials, every
+# request authenticates with its own bearer token. Deployments with several
+# web nodes need a shared backend here.
+#
+MedienreaktorNeosApiMcp_Sessions:
+  frontend: Neos\Cache\Frontend\VariableFrontend
+  backend: Neos\Cache\Backend\FileBackend
+  backendOptions:
+    defaultLifetime: 3600
+
+#
+# The tools derived from the OpenAPI document, keyed by the document and the
+# tool settings, so either change yields a fresh catalog.
+#
+MedienreaktorNeosApiMcp_Tools:
+  frontend: Neos\Cache\Frontend\VariableFrontend
+  backend: Neos\Cache\Backend\FileBackend

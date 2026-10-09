@@ -1,0 +1,25 @@
+{
+  "name": "medienreaktor/neos-api-mcp",
+  "type": "neos-package",
+  "description": "An MCP server for Neos 9 on top of the Neos API: Claude and other MCP clients work with your content, signed in as a Neos user.",
+  "license": "GPL-3.0-or-later",
+  "require": {
+    "php": "^8.2",
+    "neos/neos": "^9.1",
+    "medienreaktor/neos-api": "^1.14",
+    "mcp/sdk": "^0.8.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "Medienreaktor\\NeosApi\\Mcp\\": "Classes/"
+    }
+  },
+  "extra": {
+    "neos": {
+      "package-key": "Medienreaktor.NeosApi.Mcp"
+    },
+    "branch-alias": {
+      "dev-main": "0.1.x-dev"
+    }
+  }
+}

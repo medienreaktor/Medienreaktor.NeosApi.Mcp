@@ -1,0 +1,17 @@
+#
+# Both endpoints are public at the policy level: the MCP endpoint answers an
+# unauthenticated request itself (401 with WWW-Authenticate), and every tool
+# call is dispatched to a Neos API action, where the API's own privilege
+# targets, scopes and the content repository's authorization apply.
+#
+privilegeTargets:
+  'Neos\Flow\Security\Authorization\Privilege\Method\MethodPrivilege':
+    'Medienreaktor.NeosApi.Mcp:Endpoints':
+      matcher: 'method(Medienreaktor\NeosApi\Mcp\Controller\(McpController|DiscoveryController)->.*Action())'
+
+roles:
+  'Neos.Flow:Everybody':
+    privileges:
+      -
+        privilegeTarget: 'Medienreaktor.NeosApi.Mcp:Endpoints'
+        permission: GRANT
