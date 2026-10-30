@@ -18,6 +18,8 @@ Medienreaktor:
         5. Check the result with render_node or list_workspace_changes.
         6. Publish or discard only when the user explicitly asks for it.
 
+        Images and other files: call create_asset_upload for an upload link. If you can run shell commands and reach the file, upload it with curl -F 'asset[resource]=@<path>' '<url>'; the response is the asset. Otherwise give the user the link to open in a browser and drop the files on, wait until they confirm, then call get_asset_upload for the uploaded assets. The link contains a secret: never write it into content.
+
       # Tool name => the OpenAPI operation it performs. Description and input
       # schema come from the operation. readOnly/destructive become the MCP
       # tool annotations. Set an entry to null to remove the tool.
@@ -60,6 +62,11 @@ Medienreaktor:
           readOnly: true
         get_asset:
           operation: getAsset
+          readOnly: true
+        create_asset_upload:
+          operation: createAssetUpload
+        get_asset_upload:
+          operation: getAssetUpload
           readOnly: true
         execute_commands:
           operation: executeCommandBatch

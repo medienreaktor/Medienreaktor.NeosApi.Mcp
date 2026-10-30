@@ -56,11 +56,15 @@ Sign-in opens the Neos login and the consent screen of the Neos API. The scopes 
 | `render_node` | `renderNode` | read |
 | `list_assets` | `listAssets` | read |
 | `get_asset` | `getAsset` | read |
+| `create_asset_upload` | `createAssetUpload` | media |
+| `get_asset_upload` | `getAssetUpload` | read |
 | `execute_commands` | `executeCommandBatch` | write |
 | `publish_workspace` | `publishWorkspace` | publish |
 | `discard_workspace` | `discardWorkspace` | publish |
 
 The list is configuration (`Medienreaktor.NeosApi.Mcp.tools`): tool name ⇒ OpenAPI `operation`, plus `readOnly` / `destructive` for the MCP tool annotations. Any API operation with path/query parameters and an optional JSON body can be added; set an entry to `null` to remove a tool.
+
+**Files** cannot travel through a tool call (MCP arguments are JSON). `create_asset_upload` returns an upload link instead: a model with a shell posts the file there with `curl`, otherwise the user opens the link and drops the files on the page; `get_asset_upload` then lists the uploaded assets. The link is valid for 15 minutes and uploads as the signed-in editor.
 
 `Medienreaktor.NeosApi.Mcp.instructions` is sent to the client on connect and tells the model how to work with the tools (find the personal workspace, read node types before writing, write into the workspace, publish only when asked). Distributions can extend it with site-specific hints.
 
